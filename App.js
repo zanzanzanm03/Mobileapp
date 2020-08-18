@@ -1,113 +1,69 @@
-// Example: Example of SQLite Database in React Native
-// https://aboutreact.com/example-of-sqlite-database-in-react-native
-import 'react-native-gesture-handler';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import * as React from 'react';
-import { Style} from 'react-native';
+import { AppLoading, Asset } from 'expo';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import Navigation from './navigation';
+import { Block } from './components';
 
-import HomeScreen from './pages/HomeScreen';
-import RegisterUser from './pages/RegisterUser';
-import UpdateUser from './pages/UpdateUser';
-import ViewUser from './pages/ViewUser';
-import ViewAllUser from './pages/ViewAllUser';
-import DeleteUser from './pages/DeleteUser';
+// import all used images
+const images = [
+  require('./assets/icons/back.png'),
+  require('./assets/icons/plants.png'),
+  require('./assets/icons/seeds.png'),
+  require('./assets/icons/flowers.png'),
+  require('./assets/icons/sprayers.png'),
+  require('./assets/icons/pots.png'),
+  require('./assets/icons/fertilizers.png'),
+  require('./assets/images/plants_1.png'),
+  require('./assets/images/plants_2.png'),
+  require('./assets/images/plants_3.png'),
+  require('./assets/images/explore_1.png'),
+  require('./assets/images/explore_2.png'),
+  require('./assets/images/explore_3.png'),
+  require('./assets/images/explore_4.png'),
+  require('./assets/images/explore_5.png'),
+  require('./assets/images/explore_6.png'),
+  require('./assets/images/illustration_1.png'),
+  require('./assets/images/illustration_2.png'),
+  require('./assets/images/illustration_3.png'),
+  require('./assets/images/avatar.png'),
+];
 
-const Stack = createStackNavigator();
+export default class App extends React.Component {
+  state = {
+    isLoadingComplete: false,
+  }
 
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
-        <Stack.Screen
-          name="HomeScreen"
-          component={HomeScreen}
-          options={{
-            title: 'Home', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-        <Stack.Screen
-          name="View"
-          component={ViewUser}
-          options={{
-            title: 'View User', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-        <Stack.Screen
-          name="ViewAll"
-          component={ViewAllUser}
-          options={{
-            title: 'View Users', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Update"
-          component={UpdateUser}
-          options={{
-            title: 'Update User', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterUser}
-          options={{
-            title: 'Register User', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Delete"
-          component={DeleteUser}
-          options={{
-            title: 'Delete User', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#f4511e', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
+  handleResourcesAsync = async () => {
+    // we're caching all the images
+    // for better performance on the app
 
-export default App;
+    const cacheImages = images.map(image => {
+      return Asset.fromModule(image).downloadAsync();
+    });
+
+    return Promise.all(cacheImages);
+  }
+
+  render() {
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+      return (
+        <AppLoading
+          startAsync={this.handleResourcesAsync}
+          onError={error => console.warn(error)}
+          onFinish={() => this.setState({ isLoadingComplete: true })}
+        />
+      )
+    }
+
+    return (
+      <Block white>
+        <Navigation />
+      </Block>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+});
